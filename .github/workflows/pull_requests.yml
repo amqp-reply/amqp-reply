@@ -1,4 +1,4 @@
-name: Run Tests
+name: Pull request to main
 
 on:
   pull_request:
@@ -23,11 +23,13 @@ jobs:
         run: composer install --dev --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Run tests with coverage
-        run: vendor/bin/phpunit --coverage-clover coverage.xml --testsuite unit
+        run: XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text=coverage.txt --testsuite unit
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          fail_ci_if_error: true
+      - name: Check coverage threshold
+        run: |
+          COVERAGE=$(grep -oP 'Lines:\s+\K\d+\.\d+' coverage.txt | head -n 1)
+          echo "Coverage: $COVERAGE%"
+          if (( $(echo "$COVERAGE < 95" | bc -l) )); then
+            echo "Coverage is below 95%. Failing the job."
+            exit 1
+          fi
