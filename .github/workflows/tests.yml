@@ -25,6 +25,7 @@ jobs:
       - name: Run tests with coverage
         run: vendor/bin/phpunit --coverage-clover coverage.xml --testsuite unit
 
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
