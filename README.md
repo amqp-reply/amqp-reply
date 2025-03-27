@@ -33,7 +33,7 @@ framework:
             type: topic
           queues:
             query_queue: ~
-          reply: # Option to enable amqp-messenger
+          reply: # Option to enable amqp-reply
             timeout: 5
             prefix: 'my_reply_'
     routing:
